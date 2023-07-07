@@ -5,13 +5,20 @@
     <link href="{% static 'perfil/css/home.css' %}" rel="stylesheet">
     <link href="{% static 'perfil/css/gerenciar.css' %}" rel="stylesheet">
 
-{% endblock %}
+{% endblock 'head' %}
 
 {% block 'body' %}
     <br>
     <br>
     <div class="container">
         <div class="row">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
             <div class="col-md-5">
                 <p class="fonte-destaque">Suas contas</p>
                 <hr>
@@ -39,13 +46,14 @@
             <div class="col-md-5">
                 <p class="fonte-destaque">Nova conta</p>
                 
-                <form action="" method="POST">
+                <form action="{% url 'cadastrar_banco' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
                     <label>Apelido</label>
                     <input type="text" name="apelido" class="form-control" placeholder="">
                     <br>
                     <label>Banco</label>
                     <select name="banco" class="form-select">
                         <option value="NU">Nubank</option>
+                        <option value="CE">Caixa Econômica</option>
                     </select>
                     <br>
                     <label>Tipo</label>
@@ -57,7 +65,7 @@
                     <label>Valor</label>
                     <input type="number" name="valor" class="form-control" placeholder="">
                     <br>
-                    <input type="file" placeholder="Ícone" name="icone">
+                    <input type="file" placeholder="Ícone" name="icone" required>
                     <br>
                     <br>
                     <input style="width: 100%" type="submit" class="botao-principal">
@@ -104,4 +112,4 @@
             </div>
         </div>
     </div>
-{% endblock %}
+{% endblock 'body' %}
