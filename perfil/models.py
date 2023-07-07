@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 
+
 class Categoria(models.Model):
     categoria = models.CharField(max_length=50)
     essencial = models.BooleanField(default=False)
@@ -9,6 +10,7 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.categoria
+
 
 class Conta(models.Model):
     banco_choices = (
