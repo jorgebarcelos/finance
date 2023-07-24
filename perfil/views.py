@@ -1,8 +1,12 @@
+from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.messages import constants
 from django.contrib import messages
+from django.db.models import Sum
+from extrato.models import Valores
 from .models import Conta, Categoria
 from .utils import calcula_total
+
 # Create your views here.
 
 
@@ -65,3 +69,24 @@ def update_categoria(request, id):
     categoria.save()
 
     return redirect('/perfil/gerenciar/')
+
+
+def dashboard(request):
+    titulo = 'Gastos por categoria'
+    dados = {}
+    categorias = Categoria.objects.all()
+    mes_atual = datetime.now().month
+
+    for categoria in categorias:
+        valores = (
+            Valores.objects.filter(tipo='S')
+            .filter(data__month=mes_atual)
+            .filter(categoria=categoria)
+            .aggregate(Sum('valor'))['valor__sum']
+        )
+        valores = valores if valores is not None else 0
+        dados[categoria.categoria] = valores
+
+    return render(
+        request, 'dashboard.html', {'titulo': titulo, 'labels': list(dados.keys()), 'values': list(dados.values())}
+    )
